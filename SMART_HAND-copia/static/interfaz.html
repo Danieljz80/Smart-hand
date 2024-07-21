@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Hand</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-start;
+            position: relative;
+        }
+        .title {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            border-radius: 10px 10px 0 0;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .content {
+            flex: 1;
+        }
+        .section {
+            margin: 20px 0;
+            text-align: left;
+        }
+        .section h2 {
+            margin-bottom: 10px;
+        }
+        .section button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .section button:hover {
+            background-color: #0056b3;
+        }
+        .hand-image {
+            margin-left: 20px;
+        }
+        .hand-image img {
+            max-width: 100px;
+        }
+        .recuadro {
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .iniciar-btn, .finalizar-btn {
+            position: absolute;
+            bottom: 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .iniciar-btn {
+            right: 160px;
+        }
+        .finalizar-btn {
+            right: 20px;
+        }
+        .iniciar-btn:hover, .finalizar-btn:hover {
+            background-color: #0056b3;
+        }
+        .slider-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .slider-container label {
+            margin-bottom: 5px;
+        }
+        .slider {
+            width: 100%;
+        }
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            padding: 0 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="title">
+        <h1>Smart Hand</h1>
+    </div>
+    
+    <div class="container">
+        <div class="content">
+            <div class="section">
+                <h2>Ajustes</h2>
+                <button onclick="gestos(event)">Gestos</button>
+                <p>Incluyen clic derecho e izquierdo, doble clic, scroll y así mismo el arrastre, para una mejor y cómoda experiencia</p>
+            </div>
+            
+            <div class="section">
+                <h2>Sensibilidad</h2>
+                <p>Activa o desactiva la sensibilidad del puntero, deslizar rápidamente hacia arriba, abajo, izquierda y derecha</p>
+                <div class="recuadro">
+                    <button onclick="activar(event)">Activar</button>
+                    <div class="slider-container">
+                        <label for="sensibilidad">Sensibilidad:</label>
+                        <input type="range" id="sensibilidad" class="slider" min="1" max="3" step="1" value="2" disabled>
+                        <div class="slider-labels">
+                            <span>Bajo</span>
+                            <span>Medio</span>
+                            <span>Alto</span>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="desactivar(event)">Desactivar</button>
+            </div>
+        </div>
+        
+        <div class="hand-image">
+            <img src="https://media.istockphoto.com/id/1447292837/es/vector/imagen-de-ilustraci%C3%B3n-de-rat%C3%B3n-con-la-mano-jpeg.jpg?s=1024x1024&w=is&k=20&c=EzEcZuY66YmiM_MxyFL05iEKZdDbqiwPgAGKlHaqwXc=" alt="Mano con ratón">
+        </div>
+        
+        <button class="iniciar-btn" onclick="iniciar(event)">Iniciar</button>
+        <button class="finalizar-btn" onclick="finalizar(event)">Finalizar</button>
+    </div>
+
+    <script>
+        function gestos(event) {
+            event.preventDefault();
+            alert("Gestores activados");
+        }
+
+        function activar(event) {
+            event.preventDefault();
+            alert("Sensibilidad activada");
+            document.getElementById('sensibilidad').disabled = false;
+        }
+
+        function desactivar(event) {
+            event.preventDefault();
+            alert("Sensibilidad desactivada");
+            document.getElementById('sensibilidad').disabled = true;
+        }
+
+        function iniciar(event) {
+            event.preventDefault();
+            fetch('http://localhost:5000/api/python_script', {  // Asegúrate de usar la URL correcta de tu servidor
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ command: 'start_script' })  // Puedes enviar cualquier dato necesario
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Resultado:', data);
+                alert("Script iniciado");
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Error al iniciar el script");
+            });
+        }
+
+        function finalizar(event) {
+            event.preventDefault();
+            fetch('http://localhost:5000/api/python_script', {  // Asegúrate de usar la URL correcta de tu servidor
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ command: 'stop_script' })  // Puedes enviar cualquier dato necesario
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Resultado:', data);
+                alert("Script finalizado");
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Error al finalizar el script");
+            });
+        }
+    </script>
+
+</body>
+</html>
+
+
+
